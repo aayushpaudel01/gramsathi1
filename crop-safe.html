@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Safety | GramSathi</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <style>
+    :root{
+      --green-dark:#0f5132;
+      --green-main:#16a34a;
+      --green-soft:#ecfdf5;
+      --yellow:#f59e0b;
+      --red:#dc2626;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#065f46;
+      --muted:#6b7280;
+    }
+
+    *{box-sizing:border-box;font-family:'Inter',sans-serif}
+    body{margin:0;background:var(--bg)}
+
+    .layout{display:flex;min-height:100vh}
+
+    /* Sidebar */
+    .sidebar{
+      width:240px;
+      background:var(--green-dark);
+      color:#ecfdf5;
+      padding:26px 22px;
+    }
+    .sidebar h2{margin-bottom:34px}
+    .nav-link{
+      display:block;
+      padding:12px 14px;
+      border-radius:10px;
+      margin-bottom:10px;
+      text-decoration:none;
+      color:#d1fae5;
+      font-weight:500;
+    }
+    .nav-link:hover,.nav-link.active{background:var(--green-main);color:#fff}
+
+    /* Content */
+    .content{flex:1;padding:34px}
+    .title{font-size:26px;font-weight:600;color:var(--text);margin-bottom:6px}
+    .subtitle{color:var(--muted);margin-bottom:28px}
+
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
+
+    .card{
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+    }
+
+    .card h3{margin-top:0;color:var(--text)}
+
+    .value{font-size:22px;font-weight:700;margin-top:10px}
+    .safe{color:var(--green-main)}
+    .medium{color:var(--yellow)}
+    .high{color:var(--red)}
+
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      font-size:14px;
+      margin-top:8px;
+    }
+    .input:focus{border-color:var(--green-main);outline:none;box-shadow:0 0 0 2px rgba(22,163,74,.15)}
+
+    .btn{
+      margin-top:18px;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .btn:hover{opacity:.95}
+
+    .tip{margin-top:10px;font-size:14px;color:var(--muted)}
+
+    .info{margin-top:32px;background:var(--green-soft);padding:20px;border-radius:14px;color:var(--text);font-size:14px}
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>GramSathi</h2>
+    <a class="nav-link" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="climate-risk.html">Climate Risk</a>
+    <a class="nav-link active" href="crop-safe.html">Crop Safety</a>
+    <a class="nav-link" href="market-insights.html">Market Insight</a>
+    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <div class="title">Crop Safety Analysis</div>
+    <div class="subtitle">Disease, stress, and moisture safety based on real climate data</div>
+
+    <section class="cards">
+
+      <!-- Input Card -->
+      <div class="card">
+        <h3>Farm Details</h3>
+        <label>Crop</label>
+        <select id="cropSelect" class="input">
+          <option value="">Choose crop</option>
+          <option>Rice</option>
+          <option>Wheat</option>
+          <option>Maize</option>
+        </select>
+
+        <label style="margin-top:12px;display:block">Location</label>
+        <input id="locationInput" class="input" placeholder="Village / District" />
+
+        <button class="btn" onclick="analyzeSafety()">Analyze Crop Safety</button>
+        <div class="tip">Uses temperature & rainfall to assess disease and stress risk</div>
+      </div>
+
+      <div class="card">
+        <h3>Overall Safety</h3>
+        <div id="safetyValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Disease Risk</h3>
+        <div id="diseaseValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Moisture Stress</h3>
+        <div id="moistureValue" class="value">--</div>
+      </div>
+
+    </section>
+
+    <div class="info">
+      Crop safety combines disease probability and moisture stress using real-time weather data. This helps farmers take preventive action early.
+    </div>
+
+  </main>
+</div>
+
+<script>
+  /* Firebase */
+  const firebaseConfig = {
+  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+  authDomain: "nexu-3d034.firebaseapp.com",
+  projectId: "nexu-3d034",
+  storageBucket: "nexu-3d034.firebasestorage.app",
+  messagingSenderId: "174169137790",
+  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+};
+
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) location = 'login.html';
+  });
+
+  function logout(){ firebase.auth().signOut().then(()=>location='login.html'); }
+
+  /* Real Data */
+  async function getCoordinates(place){
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+    const data = await res.json();
+    if(!data.length) throw 'Location not found';
+    return {lat:data[0].lat,lon:data[0].lon};
+  }
+
+  async function getWeather(lat,lon){
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
+    return await res.json();
+  }
+
+  /* Crop Safety Logic */
+  function diseaseRisk(crop,temp,rain){
+    if(crop==='Rice') return rain>8 && temp>25 ? 'High' : rain>4 ? 'Medium' : 'Low';
+    if(crop==='Wheat') return rain>6 && temp>20 ? 'High' : rain>3 ? 'Medium' : 'Low';
+    if(crop==='Maize') return rain>7 && temp>24 ? 'High' : rain>4 ? 'Medium' : 'Low';
+  }
+
+  function moistureStress(crop,temp,rain){
+    if(crop==='Rice') return rain<2 ? 'High' : rain<4 ? 'Medium' : 'Low';
+    if(crop==='Wheat') return rain<1.5 ? 'High' : rain<3 ? 'Medium' : 'Low';
+    if(crop==='Maize') return rain<2 ? 'High' : rain<3.5 ? 'Medium' : 'Low';
+  }
+
+  function overallSafety(disease,moisture){
+    if(disease==='High'||moisture==='High') return 'High Risk';
+    if(disease==='Medium'||moisture==='Medium') return 'Medium Risk';
+    return 'Safe';
+  }
+
+  async function analyzeSafety(){
+    const crop=cropSelect.value;
+    const loc=locationInput.value.trim();
+    if(!crop||!loc) return alert('Select crop and location');
+
+    try{
+      const {lat,lon}=await getCoordinates(loc);
+      const w=await getWeather(lat,lon);
+      const t=w.current.temperature_2m;
+      const r=w.current.precipitation;
+
+      const disease=diseaseRisk(crop,t,r);
+      const moisture=moistureStress(crop,t,r);
+      const overall=overallSafety(disease,moisture);
+
+      diseaseValue.innerText=disease;
+      diseaseValue.className=`value ${disease==='High'?'high':disease==='Medium'?'medium':'safe'}`;
+
+      moistureValue.innerText=moisture;
+      moistureValue.className=`value ${moisture==='High'?'high':moisture==='Medium'?'medium':'safe'}`;
+
+      safetyValue.innerText=overall;
+      safetyValue.className=`value ${overall==='High Risk'?'high':overall==='Medium Risk'?'medium':'safe'}`;
+
+    }catch(e){alert('Unable to fetch crop safety data');}
+  }
+</script>
+
+</body>
+</html>

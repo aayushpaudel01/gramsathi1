@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Insights | GramSathi</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <style>
+    :root{
+      --green-dark:#0f5132;
+      --green-main:#16a34a;
+      --green-soft:#ecfdf5;
+      --yellow:#f59e0b;
+      --red:#dc2626;
+      --blue:#2563eb;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#065f46;
+      --muted:#6b7280;
+    }
+
+    *{box-sizing:border-box;font-family:'Inter',sans-serif}
+    body{margin:0;background:var(--bg)}
+
+    .layout{display:flex;min-height:100vh}
+
+    /* Sidebar */
+    .sidebar{
+      width:240px;
+      background:var(--green-dark);
+      color:#ecfdf5;
+      padding:26px 22px;
+    }
+    .sidebar h2{margin-bottom:34px}
+    .nav-link{
+      display:block;
+      padding:12px 14px;
+      border-radius:10px;
+      margin-bottom:10px;
+      text-decoration:none;
+      color:#d1fae5;
+      font-weight:500;
+    }
+    .nav-link:hover,.nav-link.active{background:var(--green-main);color:#fff}
+
+    /* Content */
+    .content{flex:1;padding:34px}
+    .title{font-size:26px;font-weight:600;color:var(--text);margin-bottom:6px}
+    .subtitle{color:var(--muted);margin-bottom:28px}
+
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
+
+    .card{
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+    }
+
+    .card h3{margin-top:0;color:var(--text)}
+
+    .value{font-size:22px;font-weight:700;margin-top:10px}
+    .safe{color:var(--green-main)}
+    .medium{color:var(--yellow)}
+    .high{color:var(--red)}
+    .trend{color:var(--blue)}
+
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      font-size:14px;
+      margin-top:8px;
+    }
+    .input:focus{border-color:var(--green-main);outline:none;box-shadow:0 0 0 2px rgba(22,163,74,.15)}
+
+    .btn{
+      margin-top:18px;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .btn:hover{opacity:.95}
+
+    .insight{margin-top:10px;font-size:14px;color:var(--muted)}
+
+    .info{margin-top:32px;background:var(--green-soft);padding:20px;border-radius:14px;color:var(--text);font-size:14px}
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>GramSathi</h2>
+    <a class="nav-link" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="climate-risk.html">Climate Risk</a>
+    <a class="nav-link" href="crop-safe.html">Crop Safety</a>
+    <a class="nav-link active" href="market-insights.html">Market Insight</a>
+    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <div class="title">Market Insights</div>
+    <div class="subtitle">Price trends, demand signals, and selling recommendations</div>
+
+    <section class="cards">
+
+      <!-- Input Card -->
+      <div class="card">
+        <h3>Market Inputs</h3>
+        <label>Crop</label>
+        <select id="cropSelect" class="input">
+          <option value="">Choose crop</option>
+          <option>Rice</option>
+          <option>Wheat</option>
+          <option>Maize</option>
+        </select>
+
+        <label style="margin-top:12px;display:block">Location</label>
+        <input id="locationInput" class="input" placeholder="District / Market area" />
+
+        <button class="btn" onclick="analyzeMarket()">Analyze Market</button>
+        <div class="insight">Combines production outlook & seasonal demand</div>
+      </div>
+
+      <div class="card">
+        <h3>Demand Trend</h3>
+        <div id="demandValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Supply Pressure</h3>
+        <div id="supplyValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Price Outlook</h3>
+        <div id="priceValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Sell Recommendation</h3>
+        <div id="adviceValue" class="value">--</div>
+      </div>
+
+    </section>
+
+    <div class="info">
+  Market insight is generated using real weather-driven supply signals, crop seasonality, and trend-based pricing logic. All recommendations are explainable and transparent.
+</div>
+
+<div class="info" style="margin-top:14px">
+  <strong>How this works:</strong><br>
+  • Supply is estimated using temperature & rainfall suitability for the selected crop<br>
+  • Demand is derived from seasonal consumption cycles<br>
+  • Price outlook is inferred from demand–supply balance<br>
+  • Recommendation is generated for small & marginal farmers
+</div>
+
+  </main>
+</div>
+
+<script>
+  /* Firebase */
+  const firebaseConfig = {
+  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+  authDomain: "nexu-3d034.firebaseapp.com",
+  projectId: "nexu-3d034",
+  storageBucket: "nexu-3d034.firebasestorage.app",
+  messagingSenderId: "174169137790",
+  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+};
+
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) location = 'login.html';
+  });
+
+  function logout(){ firebase.auth().signOut().then(()=>location='login.html'); }
+
+  /* Market Logic */
+  function seasonalDemand(crop){
+    const month=new Date().getMonth()+1;
+    if(crop==='Rice') return month>=9&&month<=12?'High':'Medium';
+    if(crop==='Wheat') return month>=3&&month<=6?'High':'Medium';
+    if(crop==='Maize') return month>=7&&month<=10?'High':'Medium';
+  }
+
+  function supplyPressure(crop,temp,rain){
+    if(crop==='Rice') return rain>6?'High':'Medium';
+    if(crop==='Wheat') return temp<30?'High':'Medium';
+    if(crop==='Maize') return rain>5?'High':'Medium';
+  }
+
+  function priceOutlook(demand,supply){
+    if(demand==='High'&&supply==='Low') return 'Rising';
+    if(demand==='High'&&supply==='Medium') return 'Stable';
+    if(demand==='Medium'&&supply==='High') return 'Falling';
+    return 'Stable';
+  }
+
+  function sellAdvice(outlook){
+    if(outlook==='Rising') return 'Hold for Better Price';
+    if(outlook==='Stable') return 'Sell if Needed';
+    return 'Sell Early';
+  }
+
+  /* Weather for supply logic */
+  async function getCoordinates(place){
+    const res=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+    const data=await res.json();
+    if(!data.length) throw 'Location not found';
+    return {lat:data[0].lat,lon:data[0].lon};
+  }
+
+  async function getWeather(lat,lon){
+    const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
+    return await res.json();
+  }
+
+  async function analyzeMarket(){
+    const crop=cropSelect.value;
+    const loc=locationInput.value.trim();
+    if(!crop||!loc) return alert('Select crop and location');
+
+    try{
+      const {lat,lon}=await getCoordinates(loc);
+      const w=await getWeather(lat,lon);
+      const temp=w.current.temperature_2m;
+      const rain=w.current.precipitation;
+
+      const demand=seasonalDemand(crop);
+      const supply=supplyPressure(crop,temp,rain);
+      const outlook=priceOutlook(demand,supply);
+      const advice=sellAdvice(outlook);
+
+      demandValue.innerText=demand;
+      demandValue.className=`value ${demand==='High'?'trend':'medium'}`;
+
+      supplyValue.innerText=supply;
+      supplyValue.className=`value ${supply==='High'?'high':'medium'}`;
+
+      priceValue.innerText=outlook;
+      priceValue.className=`value ${outlook==='Rising'?'trend':'medium'}`;
+
+      adviceValue.innerText=advice;
+      adviceValue.className=`value ${advice.includes('Hold')?'safe':advice.includes('Early')?'high':'medium'}`;
+
+    }catch(e){alert('Unable to analyze market');}
+  }
+</script>
+
+</body>
+</html>
