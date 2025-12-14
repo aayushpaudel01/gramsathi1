@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramSathi AI – Farmer Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<aside class="sidebar">
+<h2>GramSathi AI</h2>
+<div class="menu">
+<a class="active" onclick="showPage('dashboard', this)">Dashboard</a>
+<a onclick="showPage('cropRisk', this)">Crop Risk</a>
+<a onclick="showPage('marketPrices', this)">Market Insights</a>
+<a onclick="showPage('climateAlerts', this)">Climate Alerts</a>
+<a onclick="showPage('settings', this)">Settings</a>
+<a onclick="logout()" style="background:#dc2626; text-align:center; margin-top:20px; color:white;">Logout</a>
+</div>
+</aside>
+<main>
+<div class="topbar">
+<h1 id="pageTitle">Dashboard</h1>
+</div>
+<div id="dashboardPage">
+<div class="input-group">
+<input type="text" id="locationInput" placeholder="Enter your village" />
+<select id="cropSelect">
+<option value="Maize">Maize</option>
+<option value="Rice">Rice</option>
+<option value="Wheat">Wheat</option>
+</select>
+<button class="submit-btn" onclick="refreshDashboard()">Submit</button>
+</div>
+<section class="grid">
+<div class="card">
+<h3>🌦️ Climate Risk</h3>
+<div class="status medium" id="climateStatus">-</div>
+<p>Weather information will appear here.</p>
+</div>
+<div class="card">
+<h3>💰 Market Advice</h3>
+<div class="status safe" id="marketStatus">-</div>
+<p>Market tips will appear here.</p>
+</div>
+<div class="card">
+<h3>📊 Yield Prediction</h3>
+<div class="status" id="yieldStatus">-</div>
+<p>Predicted crop yield probability.</p>
+</div>
+</section>
+<section class="advisory">
+<h3>📌 Today’s AI Advisory</h3>
+<ul id="advisoryList"></ul>
+</section>
+</div>
+</body>
+</html>

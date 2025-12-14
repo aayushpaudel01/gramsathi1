@@ -51,6 +51,42 @@
 };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    let isLogin = true;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      document.getElementById('nameGroup').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('formTitle').innerText = isLogin ? 'Login to GramSathi' : 'Create your account';
+      document.getElementById('formSubtitle').innerText = isLogin ? 'Access your farmer dashboard' : 'Join GramSathi AI today';
+      document.getElementById('authBtn').innerText = isLogin ? 'Login' : 'Register';
+      document.getElementById('toggleText').innerText = isLogin ? "Don't have an account? Register" : 'Already have an account? Login';
+      document.getElementById('error').innerText = '';
+    }
+
+    function handleAuth() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const errorDiv = document.getElementById('error');
+
+      errorDiv.innerText = '';
+
+      if (!email || !password || (!isLogin && !name)) {
+        errorDiv.innerText = 'Please fill all required fields.';
+        return;
+      }
+
+      if (isLogin) {
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => window.location.href = 'dashboard.html')
+          .catch(err => errorDiv.innerText = err.message);
+      } else {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(cred => cred.user.updateProfile({ displayName: name }))
+          .then(() => window.location.href = 'dashboard.html')
+          .catch(err => errorDiv.innerText = err.message);
+      }
+    }
     </script>
 </body>
 </html>
