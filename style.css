@@ -1,3 +1,13 @@
+:root {
+    --primary: #1f7a4d;
+    --secondary: #e6f4ee;
+    --dark: #0f172a;
+    --muted: #64748b;
+    --accent: #22c55e;
+    --light: #ffffff;
+    --gradient: linear-gradient(135deg, #1f7a4d, #22c55e);
+}
+
 #navbar {
     display: flex;
     gap: 20px;
