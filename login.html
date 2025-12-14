@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | GramSathi AI</title>
+    <link rel="stylesheet" href="login.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="formTitle">Login to GramSathi</h2>
+    <p class="subtitle" id="formSubtitle">Access your farmer dashboard</p>
+    <div class="input-group" id="nameGroup" style="display:none;">
+      <input type="text" id="name" placeholder="Full Name" />
+    </div>
+
+    <div class="input-group">
+      <input type="email" id="email" placeholder="Email Address" />
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Password" />
+    </div>
+
+    <button onclick="handleAuth()" id="authBtn">Login</button>
+
+    <div class="switch">
+      <span id="toggleText" onclick="toggleForm()">Don't have an account? Register</span>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="back-home">
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>
