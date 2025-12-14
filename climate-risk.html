@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Risk | GramSathi</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <style>
+    :root{
+      --green-dark:#0f5132;
+      --green-main:#16a34a;
+      --green-soft:#ecfdf5;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#065f46;
+      --muted:#6b7280;
+    }
+
+    *{box-sizing:border-box;font-family:'Inter',sans-serif}
+    body{margin:0;background:var(--bg)}
+
+    .layout{display:flex;min-height:100vh}
+
+    .sidebar{
+      width:240px;
+      background:var(--green-dark);
+      color:#ecfdf5;
+      padding:26px 22px;
+    }
+    .sidebar h2{margin-bottom:34px}
+    .nav-link{
+      display:block;
+      padding:12px 14px;
+      border-radius:10px;
+      margin-bottom:10px;
+      text-decoration:none;
+      color:#d1fae5;
+      font-weight:500;
+    }
+    .nav-link:hover,.nav-link.active{background:var(--green-main);color:#fff}
+
+
+    .content{flex:1;padding:34px}
+    .title{font-size:26px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .subtitle{color:var(--muted);margin-bottom:28px}
+
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
+
+    .card{
+      background:var(--card);
+      padding:26px;
+      border-radius:18px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+    }
+
+    .card h3{margin-top:0;color:var(--text)}
+
+    .value{font-size:22px;font-weight:700;margin-top:10px}
+    .safe{color:#16a34a}
+    .medium{color:#f59e0b}
+    .high{color:#dc2626}
+
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      font-size:14px;
+      margin-top:8px;
+    }
+
+    .input:focus{border-color:var(--green-main);outline:none;box-shadow:0 0 0 2px rgba(22,163,74,.15)}
+
+    .btn{
+      margin-top:18px;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .btn:hover{opacity:.95}
+
+    .explain{margin-top:32px;background:var(--green-soft);padding:20px;border-radius:14px;color:var(--text);font-size:14px}
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+
+  <aside class="sidebar">
+    <h2>GramSathi</h2>
+    <a class="nav-link" href="dashboard.html">Dashboard</a>
+    <a class="nav-link active" href="climate-risk.html">Climate Risk</a>
+    <a class="nav-link" href="crop-safe.html">Crop Safety</a>
+    <a class="nav-link" href="market-insights.html">Market Insight</a>
+    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+  </aside>
+
+  
+  <main class="content">
+
+    <div class="title">Climate Risk Analysis</div>
+    <div class="subtitle">Real-time weather-based climate risk for your crop</div>
+
+    <section class="cards">
+
+      <div class="card">
+        <h3>Farm Details</h3>
+        <label>Crop</label>
+        <select id="cropSelect" class="input">
+          <option value="">Choose crop</option>
+          <option>Rice</option>
+          <option>Wheat</option>
+          <option>Maize</option>
+        </select>
+
+        <label style="margin-top:12px;display:block">Location</label>
+        <input id="locationInput" class="input" placeholder="Village / District" />
+
+        <button class="btn" onclick="analyzeClimate()">Analyze Climate Risk</button>
+      </div>
+
+      <div class="card">
+        <h3>Current Temperature</h3>
+        <div id="tempValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Climate Risk Level</h3>
+        <div id="riskValue" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Rainfall (mm)</h3>
+        <div id="rainValue" class="value">--</div>
+      </div>
+
+    </section>
+
+    <div class="explain">
+      Climate risk is calculated using crop-specific temperature thresholds and real-time weather data from Open-Meteo. Location coordinates are obtained using OpenStreetMap services.
+    </div>
+
+  </main>
+</div>
+
+<script>
+
+   const firebaseConfig = {
+  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+  authDomain: "nexu-3d034.firebaseapp.com",
+  projectId: "nexu-3d034",
+  storageBucket: "nexu-3d034.firebasestorage.app",
+  messagingSenderId: "174169137790",
+  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+};
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) location = 'login.html';
+  });
+
+  function logout(){ firebase.auth().signOut().then(()=>location='login.html'); }
+
+  async function getCoordinates(place){
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+    const data = await res.json();
+    if(!data.length) throw 'Location not found';
+    return {lat:data[0].lat,lon:data[0].lon};
+  }
+
+  async function getWeather(lat,lon){
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
+    return await res.json();
+  }
+
+  function climateRisk(crop,temp){
+    if(crop==='Rice'){
+      if(temp<18||temp>38) return 'High';
+      if(temp<20||temp>35) return 'Medium';
+      return 'Low';
+    }
+    if(crop==='Wheat'){
+      if(temp<5||temp>32) return 'High';
+      if(temp<10||temp>25) return 'Medium';
+      return 'Low';
+    }
+    if(crop==='Maize'){
+      if(temp<10||temp>35) return 'High';
+      if(temp<18||temp>30) return 'Medium';
+      return 'Low';
+    }
+  }
+
+  async function analyzeClimate(){
+    const crop=cropSelect.value;
+    const loc=locationInput.value.trim();
+    if(!crop||!loc) return alert('Select crop and location');
+
+    try{
+      const {lat,lon}=await getCoordinates(loc);
+      const w=await getWeather(lat,lon);
+      const t=w.current.temperature_2m;
+      const r=w.current.precipitation;
+      const risk=climateRisk(crop,t);
+
+      tempValue.innerText=`${t}°C`;
+      rainValue.innerText=`${r} mm`;
+      riskValue.innerText=risk;
+      riskValue.className=`value ${risk==='High'?'high':risk==='Medium'?'medium':'safe'}`;
+
+    }catch(e){alert('Unable to fetch climate data');}
+  }
+</script>
+
+</body>
+</html>
