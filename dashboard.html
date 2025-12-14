@@ -56,5 +56,44 @@
 <ul id="advisoryList"></ul>
 </section>
 </div>
+<div id="cropRiskPage" style="display:none;"><h2>Crop Risk Assessment</h2><p>Analyze potential risks for your crops based on weather, pests, and seasonal trends.</p><input type="text" id="riskLocation" placeholder="Enter location" /><select id="riskCrop"><option>Maize</option><option>Rice</option><option>Wheat</option></select><button class="submit-btn" onclick="showCropRisk()">Check Risk</button><div id="riskResult" style="margin-top:20px;"></div></div>
+<div id="marketPricesPage" style="display:none;"><h2>Market Insights</h2><p>Get current market prices and advice for selling crops.</p><input type="text" id="marketLocation" placeholder="Enter location" /><select id="marketCrop"><option>Maize</option><option>Rice</option><option>Wheat</option></select><button class="submit-btn" onclick="showMarketInsights()">Get Prices</button><div id="marketResult" style="margin-top:20px;"></div></div>
+<div id="climateAlertsPage" style="display:none;"><h2>Climate Alerts</h2><p>Real-time alerts and warnings based on weather conditions.</p><input type="text" id="alertLocation" placeholder="Enter location" /><button class="submit-btn" onclick="showClimateAlerts()">Check Alerts</button><div id="alertResult" style="margin-top:20px;"></div></div>
+<div id="settingsPage" style="display:none;"><h2>Settings</h2><p>Configure user preferences and notifications.</p></div>
+
+</main>
+</div>
+<button class="voice-btn" onclick="openVoice()">🎙️</button>
+</div>
+<script>
+function showPage(pageId, el){
+const pages=['dashboardPage','cropRiskPage','marketPricesPage','climateAlertsPage','settingsPage'];
+pages.forEach(p=>document.getElementById(p).style.display='none');
+document.getElementById(pageId+'Page').style.display='block';
+document.getElementById('pageTitle').innerText=pageId.replace(/([A-Z])/g,' $1').replace(/^./,str=>str.toUpperCase());
+document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
+el.classList.add('active');
+}
+
+function refreshDashboard(){
+const crop=document.getElementById('cropSelect').value;
+let climateLevel, climateClass, marketAdvice, marketClass, yieldVal, tips=[];
+if(crop==='Maize'){ climateLevel='MEDIUM'; climateClass='medium'; marketAdvice='WAIT'; marketClass='safe'; yieldVal='78%'; tips=['✔ Irrigate early morning','✔ Monitor leaves daily']; }
+else if(crop==='Rice'){ climateLevel='HIGH'; climateClass='danger'; marketAdvice='SELL NOW'; marketClass='danger'; yieldVal='70%'; tips=['✔ Maintain water level','✔ Protect from pests']; }
+else if(crop==='Wheat'){ climateLevel='SAFE'; climateClass='safe'; marketAdvice='HOLD'; marketClass='medium'; yieldVal='85%'; tips=['✔ Fertilize moderately','✔ Check soil moisture']; }
+document.getElementById('climateStatus').innerText=climateLevel;
+document.getElementById('climateStatus').className='status '+climateClass;
+document.getElementById('marketStatus').innerText=marketAdvice;
+document.getElementById('marketStatus').className='status '+marketClass;
+document.getElementById('yieldStatus').innerText=yieldVal;
+const advisoryList=document.getElementById('advisoryList');
+advisoryList.innerHTML=''; tips.forEach(t=>{const li=document.createElement('li'); li.textContent=t; advisoryList.appendChild(li);});
+}
+function showCropRisk(){const crop=document.getElementById('riskCrop').value; document.getElementById('riskResult').innerText=`Crop Risk for ${crop}: Moderate risk due to seasonal factors.`;}
+function showMarketInsights(){const crop=document.getElementById('marketCrop').value; document.getElementById('marketResult').innerText=`Current market price for ${crop}: 1000-1200 Rs/quintal.`;}
+function showClimateAlerts(){document.getElementById('alertResult').innerText='No severe weather alerts in your area.';}
+function logout(){if(confirm('Do you want to logout?')) window.location.href='landingPage.html';}
+function openVoice(){alert('Voice assistant ready');}
+</script>
 </body>
 </html>
