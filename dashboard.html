@@ -1,99 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GramSathi AI – Farmer Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GramSathi Dashboard</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
 <link rel="stylesheet" href="dashboard.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-<aside class="sidebar">
-<h2>GramSathi AI</h2>
-<div class="menu">
-<a class="active" onclick="showPage('dashboard', this)">Dashboard</a>
-<a onclick="showPage('cropRisk', this)">Crop Risk</a>
-<a onclick="showPage('marketPrices', this)">Market Insights</a>
-<a onclick="showPage('climateAlerts', this)">Climate Alerts</a>
-<a onclick="showPage('settings', this)">Settings</a>
-<a onclick="logout()" style="background:#dc2626; text-align:center; margin-top:20px; color:white;">Logout</a>
-</div>
-</aside>
-<main>
-<div class="topbar">
-<h1 id="pageTitle">Dashboard</h1>
-</div>
-<div id="dashboardPage">
-<div class="input-group">
-<input type="text" id="locationInput" placeholder="Enter your village" />
-<select id="cropSelect">
-<option value="Maize">Maize</option>
-<option value="Rice">Rice</option>
-<option value="Wheat">Wheat</option>
-</select>
-<button class="submit-btn" onclick="refreshDashboard()">Submit</button>
-</div>
-<section class="grid">
-<div class="card">
-<h3>🌦️ Climate Risk</h3>
-<div class="status medium" id="climateStatus">-</div>
-<p>Weather information will appear here.</p>
-</div>
-<div class="card">
-<h3>💰 Market Advice</h3>
-<div class="status safe" id="marketStatus">-</div>
-<p>Market tips will appear here.</p>
-</div>
-<div class="card">
-<h3>📊 Yield Prediction</h3>
-<div class="status" id="yieldStatus">-</div>
-<p>Predicted crop yield probability.</p>
-</div>
-</section>
-<section class="advisory">
-<h3>📌 Today’s AI Advisory</h3>
-<ul id="advisoryList"></ul>
-</section>
-</div>
-<div id="cropRiskPage" style="display:none;"><h2>Crop Risk Assessment</h2><p>Analyze potential risks for your crops based on weather, pests, and seasonal trends.</p><input type="text" id="riskLocation" placeholder="Enter location" /><select id="riskCrop"><option>Maize</option><option>Rice</option><option>Wheat</option></select><button class="submit-btn" onclick="showCropRisk()">Check Risk</button><div id="riskResult" style="margin-top:20px;"></div></div>
-<div id="marketPricesPage" style="display:none;"><h2>Market Insights</h2><p>Get current market prices and advice for selling crops.</p><input type="text" id="marketLocation" placeholder="Enter location" /><select id="marketCrop"><option>Maize</option><option>Rice</option><option>Wheat</option></select><button class="submit-btn" onclick="showMarketInsights()">Get Prices</button><div id="marketResult" style="margin-top:20px;"></div></div>
-<div id="climateAlertsPage" style="display:none;"><h2>Climate Alerts</h2><p>Real-time alerts and warnings based on weather conditions.</p><input type="text" id="alertLocation" placeholder="Enter location" /><button class="submit-btn" onclick="showClimateAlerts()">Check Alerts</button><div id="alertResult" style="margin-top:20px;"></div></div>
-<div id="settingsPage" style="display:none;"><h2>Settings</h2><p>Configure user preferences and notifications.</p></div>
 
-</main>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>GramSathi</h2>
+    <a class="nav-link active" href="dashboard.html">Dashboard</a>
+    <a class="nav-link" href="climate-risk.html">Climate Risk</a>
+    <a class="nav-link" href="crop-safe.html">Crop Safety</a>
+    <a class="nav-link" href="market-insights.html">Market Insight</a>
+    <a class="nav-link" href="#" onclick="logout()">Logout</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <div class="welcome" id="welcomeText">Welcome</div>
+
+    <section class="cards">
+
+      <!-- Inputs -->
+      <div class="card">
+        <h3>Farm Details</h3>
+
+        <label class="label">Crop</label>
+        <select id="cropSelect" class="input">
+          <option value="">Choose crop</option>
+          <option>Rice</option>
+          <option>Wheat</option>
+          <option>Maize</option>
+        </select>
+
+        <label class="label" style="margin-top:12px;display:block;">Location</label>
+        <input id="locationInput" class="input" placeholder="Village / District" />
+
+        <button class="primary-btn" onclick="applyInputs()">Apply</button>
+      </div>
+
+      <div class="card">
+        <h3>Climate Status</h3>
+        <div id="climateStatus" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Crop Safety</h3>
+        <div id="cropStatus" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Market Advice</h3>
+        <div id="marketStatus" class="value">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Estimated Yield</h3>
+        <div id="yield" class="value">--</div>
+      </div>
+
+    </section>
+
+    <div class="info">
+      Uses real climate data from Open‑Meteo and location data from OpenStreetMap. Market advice is generated using crop‑specific agronomic rules.
+    </div>
+
+  </main>
 </div>
-<button class="voice-btn" onclick="openVoice()">🎙️</button>
-</div>
+
 <script>
-function showPage(pageId, el){
-const pages=['dashboardPage','cropRiskPage','marketPricesPage','climateAlertsPage','settingsPage'];
-pages.forEach(p=>document.getElementById(p).style.display='none');
-document.getElementById(pageId+'Page').style.display='block';
-document.getElementById('pageTitle').innerText=pageId.replace(/([A-Z])/g,' $1').replace(/^./,str=>str.toUpperCase());
-document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
-el.classList.add('active');
-}
+  /* ================= Firebase ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+  authDomain: "nexu-3d034.firebaseapp.com",
+  projectId: "nexu-3d034",
+  storageBucket: "nexu-3d034.firebasestorage.app",
+  messagingSenderId: "174169137790",
+  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+};
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-function refreshDashboard(){
-const crop=document.getElementById('cropSelect').value;
-let climateLevel, climateClass, marketAdvice, marketClass, yieldVal, tips=[];
-if(crop==='Maize'){ climateLevel='MEDIUM'; climateClass='medium'; marketAdvice='WAIT'; marketClass='safe'; yieldVal='78%'; tips=['✔ Irrigate early morning','✔ Monitor leaves daily']; }
-else if(crop==='Rice'){ climateLevel='HIGH'; climateClass='danger'; marketAdvice='SELL NOW'; marketClass='danger'; yieldVal='70%'; tips=['✔ Maintain water level','✔ Protect from pests']; }
-else if(crop==='Wheat'){ climateLevel='SAFE'; climateClass='safe'; marketAdvice='HOLD'; marketClass='medium'; yieldVal='85%'; tips=['✔ Fertilize moderately','✔ Check soil moisture']; }
-document.getElementById('climateStatus').innerText=climateLevel;
-document.getElementById('climateStatus').className='status '+climateClass;
-document.getElementById('marketStatus').innerText=marketAdvice;
-document.getElementById('marketStatus').className='status '+marketClass;
-document.getElementById('yieldStatus').innerText=yieldVal;
-const advisoryList=document.getElementById('advisoryList');
-advisoryList.innerHTML=''; tips.forEach(t=>{const li=document.createElement('li'); li.textContent=t; advisoryList.appendChild(li);});
-}
-function showCropRisk(){const crop=document.getElementById('riskCrop').value; document.getElementById('riskResult').innerText=`Crop Risk for ${crop}: Moderate risk due to seasonal factors.`;}
-function showMarketInsights(){const crop=document.getElementById('marketCrop').value; document.getElementById('marketResult').innerText=`Current market price for ${crop}: 1000-1200 Rs/quintal.`;}
-function showClimateAlerts(){document.getElementById('alertResult').innerText='No severe weather alerts in your area.';}
-function logout(){if(confirm('Do you want to logout?')) window.location.href='landingPage.html';}
-function openVoice(){alert('Voice assistant ready');}
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) location = 'login.html';
+    else welcomeText.innerText = `Welcome, ${user.displayName || 'Farmer'}`;
+  });
+
+  function logout() {
+    firebase.auth().signOut().then(() => location = 'login.html');
+  }
+
+  /* ================= REAL DATA LOGIC ================= */
+  async function getCoordinates(place) {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+    const data = await res.json();
+    if (!data.length) throw 'Location not found';
+    return { lat:data[0].lat, lon:data[0].lon };
+  }
+
+  async function getWeather(lat, lon) {
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
+    return await res.json();
+  }
+
+  function climateRisk(crop, temp, rain) {
+
+    // Agronomy-based realistic thresholds
+    if (crop === "Rice") {
+      if (temp < 18 || temp > 38) return "High";
+      if (temp < 20 || temp > 35) return "Medium";
+      return "Low";
+    }
+
+    if (crop === "Wheat") {
+      if (temp < 5 || temp > 32) return "High";
+      if (temp < 10 || temp > 25) return "Medium";
+      return "Low";
+    }
+
+    if (crop === "Maize") {
+      if (temp < 10 || temp > 35) return "High";
+      if (temp < 18 || temp > 30) return "Medium";
+      return "Low";
+    }
+  }
+
+  function marketAdvice(crop, t, r) {
+    if (crop==='Rice') return t>32?'Sell':'Hold';
+    if (crop==='Wheat') return t<30?'Hold':'Sell';
+    if (crop==='Maize') return r>8?'Wait':'Sell';
+  }
+
+  async function applyInputs() {
+    const crop = cropSelect.value;
+    const loc = locationInput.value.trim();
+    if (!crop || !loc) return alert('Enter crop and location');
+
+    try {
+      const {lat,lon} = await getCoordinates(loc);
+      const w = await getWeather(lat,lon);
+      const t = w.current.temperature_2m;
+      const r = w.current.precipitation;
+
+      const risk = climateRisk(crop,t,r);
+
+      climateStatus.innerText = `${risk} (${t}°C)`;
+      climateStatus.className = `value ${risk==='High'?'high':risk==='Medium'?'medium':'safe'}`;
+
+      cropStatus.innerText = risk;
+      cropStatus.className = climateStatus.className;
+
+      marketStatus.innerText = marketAdvice(crop,t,r);
+      yield.innerText = risk==='High'?'60%':risk==='Medium'?'75%':'85%';
+
+    } catch(e) {
+      alert('Unable to fetch real data');
+    }
+  }
 </script>
+
 </body>
 </html>
