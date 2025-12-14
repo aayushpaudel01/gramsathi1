@@ -16,7 +16,7 @@
         <h2>GramSathi AI</h2>
         <div id="navbar">
             <a href="#" class="navlink">Home</a>
-            <a href="about.html" class="navlink">About</a>
+            <a href="about" class="navlink">About</a>
             <a href="contact.html" class="navlink">Contact</a>
             <button onclick="goLogin()">Login / Register</button>
         </div>
@@ -76,6 +76,15 @@
 <footer>
   <p>© 2025 GramSathi AI • Innovation for Rural Resilience</p>
 </footer>
+<script>
+  function goLogin(){
+    window.location.href = 'login.html';
+  }
+
+  function scrollToFeatures(){
+    document.getElementById('features').scrollIntoView({behavior:'smooth'});
+  }
+</script>
 
 </body>
 
