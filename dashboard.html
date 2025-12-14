@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GramSathi Dashboard</title>
 
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
@@ -18,7 +16,6 @@
 
 <div class="layout">
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <h2>GramSathi</h2>
     <a class="nav-link active" href="dashboard.html">Dashboard</a>
@@ -28,14 +25,12 @@
     <a class="nav-link" href="#" onclick="logout()">Logout</a>
   </aside>
 
-  <!-- Main Content -->
   <main class="content">
 
     <div class="welcome" id="welcomeText">Welcome</div>
 
     <section class="cards">
 
-      <!-- Inputs -->
       <div class="card">
         <h3>Farm Details</h3>
 
@@ -83,7 +78,6 @@
 </div>
 
 <script>
-  /* ================= Firebase ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
   authDomain: "nexu-3d034.firebaseapp.com",
@@ -103,7 +97,6 @@ const firebaseConfig = {
     firebase.auth().signOut().then(() => location = 'login.html');
   }
 
-  /* ================= REAL DATA LOGIC ================= */
   async function getCoordinates(place) {
     const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
     const data = await res.json();
@@ -118,7 +111,6 @@ const firebaseConfig = {
 
   function climateRisk(crop, temp, rain) {
 
-    // Agronomy-based realistic thresholds
     if (crop === "Rice") {
       if (temp < 18 || temp > 38) return "High";
       if (temp < 20 || temp > 35) return "Medium";
