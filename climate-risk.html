@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,218 +12,340 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <style>
-    :root{
-      --green-dark:#0f5132;
-      --green-main:#16a34a;
-      --green-soft:#ecfdf5;
-      --bg:#f3f4f6;
-      --card:#ffffff;
-      --text:#065f46;
-      --muted:#6b7280;
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --muted: #6b7280;
+      --text: #0b1220;
+      --accent: #059669;
+      --accent-2: #10b981;
+      --danger: #ef4444;
+      --surface-border: rgba(11, 18, 32, 0.05);
+      --soft-shadow: 0 8px 28px rgba(11, 18, 32, 0.06);
+      --card-shadow: 0 14px 40px rgba(11, 18, 32, 0.08);
     }
 
-    *{box-sizing:border-box;font-family:'Inter',sans-serif}
-    body{margin:0;background:var(--bg)}
-
-    .layout{display:flex;min-height:100vh}
-
-    .sidebar{
-      width:240px;
-      background:var(--green-dark);
-      color:#ecfdf5;
-      padding:26px 22px;
-    }
-    .sidebar h2{margin-bottom:34px}
-    .nav-link{
-      display:block;
-      padding:12px 14px;
-      border-radius:10px;
-      margin-bottom:10px;
-      text-decoration:none;
-      color:#d1fae5;
-      font-weight:500;
-    }
-    .nav-link:hover,.nav-link.active{background:var(--green-main);color:#fff}
-
-
-    .content{flex:1;padding:34px}
-    .title{font-size:26px;font-weight:600;color:var(--text);margin-bottom:8px}
-    .subtitle{color:var(--muted);margin-bottom:28px}
-
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
-
-    .card{
-      background:var(--card);
-      padding:26px;
-      border-radius:18px;
-      box-shadow:0 12px 30px rgba(0,0,0,.08);
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif
     }
 
-    .card h3{margin-top:0;color:var(--text)}
-
-    .value{font-size:22px;font-weight:700;margin-top:10px}
-    .safe{color:#16a34a}
-    .medium{color:#f59e0b}
-    .high{color:#dc2626}
-
-    .input{
-      width:100%;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #e5e7eb;
-      font-size:14px;
-      margin-top:8px;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text)
     }
 
-    .input:focus{border-color:var(--green-main);outline:none;box-shadow:0 0 0 2px rgba(22,163,74,.15)}
-
-    .btn{
-      margin-top:18px;
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:14px;
-      background:linear-gradient(135deg,#16a34a,#22c55e);
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
+    .layout {
+      display: flex;
+      gap: 28px;
+      padding: 32px;
+      align-items: flex-start
     }
 
-    .btn:hover{opacity:.95}
+    .sidebar {
+      width: 260px;
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--soft-shadow);
+      border: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: calc(100vh - 64px);
+      position: sticky;
+      top: 32px;
+    }
 
-    .explain{margin-top:32px;background:var(--green-soft);padding:20px;border-radius:14px;color:var(--text);font-size:14px}
+    .sidebar h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.15rem;
+      font-weight: 700
+    }
+
+    .nav-link {
+      display: block;
+      padding: 10px 12px;
+      margin: 6px 0;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(5, 150, 105, 0.06);
+      transform: translateX(4px)
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      background: rgba(5, 150, 105, 0.08)
+    }
+
+    .nav-link.logout.pill {
+      background: var(--danger);
+      color: #fff;
+      border-radius: 999px;
+      margin-top: auto;
+      text-align: center;
+    }
+
+    .nav-link.logout.pill:hover {
+      background: #dc2626;
+      transform: none;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0
+    }
+
+    .title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 28px
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px
+    }
+
+    .card {
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--surface-border);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 22px 44px rgba(11, 18, 32, 0.08)
+    }
+
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 0.98rem;
+      color: var(--muted);
+      font-weight: 700
+    }
+
+    .value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-top: 8px;
+      color: var(--text)
+    }
+
+    .safe {
+      color: var(--accent)
+    }
+
+    .medium {
+      color: #f59e0b
+    }
+
+    .high {
+      color: var(--danger)
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(11, 18, 32, 0.06);
+      background: #fbfdff;
+      color: var(--text);
+      transition: box-shadow 160ms ease, transform 120ms;
+    }
+
+    .input:focus {
+      outline: none;
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.06);
+      transform: translateY(-2px)
+    }
+
+    .btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(5, 150, 105, 0.12);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(5, 150, 105, 0.14)
+    }
+
+    .explain {
+      margin-top: 28px;
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.02), transparent);
+      padding: 16px;
+      border-radius: 10px;
+      color: var(--muted);
+      border: 1px solid var(--surface-border)
+    }
   </style>
 </head>
+
 <body>
 
-<div class="layout">
+  <div class="layout">
 
 
-  <aside class="sidebar">
-    <h2>GramSathi</h2>
-    <a class="nav-link" href="dashboard.html">Dashboard</a>
-    <a class="nav-link active" href="climate-risk.html">Climate Risk</a>
-    <a class="nav-link" href="crop-safe.html">Crop Safety</a>
-    <a class="nav-link" href="market-insights.html">Market Insight</a>
-    <a class="nav-link" href="#" onclick="logout()">Logout</a>
-  </aside>
+    <aside class="sidebar">
+      <h2>GramSathi</h2>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link active" href="climate-risk.html">Climate Risk</a>
+      <a class="nav-link" href="crop-safe.html">Crop Safety</a>
+      <a class="nav-link" href="market-insights.html">Market Insight</a>
+      <a class="nav-link logout pill" href="#" onclick="logout()">Logout</a>
+    </aside>
 
-  
-  <main class="content">
 
-    <div class="title">Climate Risk Analysis</div>
-    <div class="subtitle">Real-time weather-based climate risk for your crop</div>
+    <main class="content">
 
-    <section class="cards">
+      <div class="title">Climate Risk Analysis</div>
+      <div class="subtitle">Real-time weather-based climate risk for your crop</div>
 
-      <div class="card">
-        <h3>Farm Details</h3>
-        <label>Crop</label>
-        <select id="cropSelect" class="input">
-          <option value="">Choose crop</option>
-          <option>Rice</option>
-          <option>Wheat</option>
-          <option>Maize</option>
-        </select>
+      <section class="cards">
 
-        <label style="margin-top:12px;display:block">Location</label>
-        <input id="locationInput" class="input" placeholder="Village / District" />
+        <div class="card">
+          <h3>Farm Details</h3>
+          <label>Crop</label>
+          <select id="cropSelect" class="input">
+            <option value="">Choose crop</option>
+            <option>Rice</option>
+            <option>Wheat</option>
+            <option>Maize</option>
+          </select>
 
-        <button class="btn" onclick="analyzeClimate()">Analyze Climate Risk</button>
+          <label style="margin-top:12px;display:block">Location</label>
+          <input id="locationInput" class="input" placeholder="Village / District" />
+
+          <button class="btn" onclick="analyzeClimate()">Analyze Climate Risk</button>
+        </div>
+
+        <div class="card">
+          <h3>Current Temperature</h3>
+          <div id="tempValue" class="value">--</div>
+        </div>
+
+        <div class="card">
+          <h3>Climate Risk Level</h3>
+          <div id="riskValue" class="value">--</div>
+        </div>
+
+        <div class="card">
+          <h3>Rainfall (mm)</h3>
+          <div id="rainValue" class="value">--</div>
+        </div>
+
+      </section>
+
+      <div class="explain">
+        Climate risk is calculated using crop-specific temperature thresholds and real-time weather data from
+        Open-Meteo. Location coordinates are obtained using OpenStreetMap services.
       </div>
 
-      <div class="card">
-        <h3>Current Temperature</h3>
-        <div id="tempValue" class="value">--</div>
-      </div>
+    </main>
+  </div>
 
-      <div class="card">
-        <h3>Climate Risk Level</h3>
-        <div id="riskValue" class="value">--</div>
-      </div>
+  <script>
 
-      <div class="card">
-        <h3>Rainfall (mm)</h3>
-        <div id="rainValue" class="value">--</div>
-      </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+      authDomain: "nexu-3d034.firebaseapp.com",
+      projectId: "nexu-3d034",
+      storageBucket: "nexu-3d034.firebasestorage.app",
+      messagingSenderId: "174169137790",
+      appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-    </section>
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) location = 'login.html';
+    });
 
-    <div class="explain">
-      Climate risk is calculated using crop-specific temperature thresholds and real-time weather data from Open-Meteo. Location coordinates are obtained using OpenStreetMap services.
-    </div>
+    function logout() { firebase.auth().signOut().then(() => location = 'login.html'); }
 
-  </main>
-</div>
-
-<script>
-
-   const firebaseConfig = {
-  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
-  authDomain: "nexu-3d034.firebaseapp.com",
-  projectId: "nexu-3d034",
-  storageBucket: "nexu-3d034.firebasestorage.app",
-  messagingSenderId: "174169137790",
-  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
-};
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) location = 'login.html';
-  });
-
-  function logout(){ firebase.auth().signOut().then(()=>location='login.html'); }
-
-  async function getCoordinates(place){
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
-    const data = await res.json();
-    if(!data.length) throw 'Location not found';
-    return {lat:data[0].lat,lon:data[0].lon};
-  }
-
-  async function getWeather(lat,lon){
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
-    return await res.json();
-  }
-
-  function climateRisk(crop,temp){
-    if(crop==='Rice'){
-      if(temp<18||temp>38) return 'High';
-      if(temp<20||temp>35) return 'Medium';
-      return 'Low';
+    async function getCoordinates(place) {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+      const data = await res.json();
+      if (!data.length) throw 'Location not found';
+      return { lat: data[0].lat, lon: data[0].lon };
     }
-    if(crop==='Wheat'){
-      if(temp<5||temp>32) return 'High';
-      if(temp<10||temp>25) return 'Medium';
-      return 'Low';
+
+    async function getWeather(lat, lon) {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);
+      return await res.json();
     }
-    if(crop==='Maize'){
-      if(temp<10||temp>35) return 'High';
-      if(temp<18||temp>30) return 'Medium';
-      return 'Low';
+
+    function climateRisk(crop, temp) {
+      if (crop === 'Rice') {
+        if (temp < 18 || temp > 38) return 'High';
+        if (temp < 20 || temp > 35) return 'Medium';
+        return 'Low';
+      }
+      if (crop === 'Wheat') {
+        if (temp < 5 || temp > 32) return 'High';
+        if (temp < 10 || temp > 25) return 'Medium';
+        return 'Low';
+      }
+      if (crop === 'Maize') {
+        if (temp < 10 || temp > 35) return 'High';
+        if (temp < 18 || temp > 30) return 'Medium';
+        return 'Low';
+      }
     }
-  }
 
-  async function analyzeClimate(){
-    const crop=cropSelect.value;
-    const loc=locationInput.value.trim();
-    if(!crop||!loc) return alert('Select crop and location');
+    async function analyzeClimate() {
+      const crop = cropSelect.value;
+      const loc = locationInput.value.trim();
+      if (!crop || !loc) return alert('Select crop and location');
 
-    try{
-      const {lat,lon}=await getCoordinates(loc);
-      const w=await getWeather(lat,lon);
-      const t=w.current.temperature_2m;
-      const r=w.current.precipitation;
-      const risk=climateRisk(crop,t);
+      try {
+        const { lat, lon } = await getCoordinates(loc);
+        const w = await getWeather(lat, lon);
+        const t = w.current.temperature_2m;
+        const r = w.current.precipitation;
+        const risk = climateRisk(crop, t);
 
-      tempValue.innerText=`${t}°C`;
-      rainValue.innerText=`${r} mm`;
-      riskValue.innerText=risk;
-      riskValue.className=`value ${risk==='High'?'high':risk==='Medium'?'medium':'safe'}`;
+        tempValue.innerText = `${t}°C`;
+        rainValue.innerText = `${r} mm`;
+        riskValue.innerText = risk;
+        riskValue.className = `value ${risk === 'High' ? 'high' : risk === 'Medium' ? 'medium' : 'safe'}`;
 
-    }catch(e){alert('Unable to fetch climate data');}
-  }
-</script>
+      } catch (e) { alert('Unable to fetch climate data'); }
+    }
+  </script>
 
 </body>
+
 </html>
