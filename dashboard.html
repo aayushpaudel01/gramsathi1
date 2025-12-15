@@ -9,6 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="assistant.css">
 </head>
 
 <body>
@@ -83,6 +84,17 @@
 
         </main>
     </div>
+<!-- Voice Assistant Button -->
+<button class="voice-btn" onclick="AIVoice.start()">
+  🎤
+</button>
+
+<div class="voice-tooltip">
+  Ask GramSathi
+</div>
+
+<script src="voice-assistant.js"></script>
+
 
     <script>
         const firebaseConfig = {
@@ -173,6 +185,9 @@
             }
         }
     </script>
+
+<script src="ai-voice-assistant.js"></script>
+
 
 </body>
 

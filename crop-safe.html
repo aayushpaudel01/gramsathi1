@@ -8,10 +8,9 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
+<link rel="stylesheet" href="assistant.css">
   <style>
     :root {
       --bg: #f4f7fb;
@@ -225,7 +224,6 @@
 
   <div class="layout">
 
-    <!-- Sidebar -->
     <aside class="sidebar">
       <h2>GramSathi</h2>
       <a class="nav-link" href="dashboard.html">Dashboard</a>
@@ -235,7 +233,6 @@
       <a class="nav-link logout pill" href="#" onclick="logout()">Logout</a>
     </aside>
 
-    <!-- Content -->
     <main class="content">
 
       <div class="title">Crop Safety Analysis</div>
@@ -243,7 +240,6 @@
 
       <section class="cards">
 
-        <!-- Input Card -->
         <div class="card">
           <h3>Farm Details</h3>
           <label>Crop</label>
@@ -285,9 +281,18 @@
 
     </main>
   </div>
+<button class="voice-btn" onclick="AIVoice.start()">
+  🎤
+</button>
+
+<div class="voice-tooltip">
+  Ask GramSathi
+</div>
+
+<script src="ai-voice-assistant.js"></script>
+
 
   <script>
-    /* Firebase */
     const firebaseConfig = {
       apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
       authDomain: "nexu-3d034.firebaseapp.com",
@@ -305,7 +310,6 @@
 
     function logout() { firebase.auth().signOut().then(() => location = 'login.html'); }
 
-    /* Real Data */
     async function getCoordinates(place) {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
       const data = await res.json();
@@ -318,7 +322,6 @@
       return await res.json();
     }
 
-    /* Crop Safety Logic */
     function diseaseRisk(crop, temp, rain) {
       if (crop === 'Rice') return rain > 8 && temp > 25 ? 'High' : rain > 4 ? 'Medium' : 'Low';
       if (crop === 'Wheat') return rain > 6 && temp > 20 ? 'High' : rain > 3 ? 'Medium' : 'Low';
@@ -364,6 +367,8 @@
       } catch (e) { alert('Unable to fetch crop safety data'); }
     }
   </script>
+  <script src="voice-assistant.js"></script>
+
 
 </body>
 
