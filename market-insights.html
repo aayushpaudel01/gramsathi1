@@ -33,24 +33,70 @@
       --card-shadow: 0 14px 40px rgba(11, 18, 32, 0.08);
     }
 
-    * { box-sizing: border-box; font-family: 'Inter', sans-serif }
-    body { margin: 0; background: var(--bg); color: var(--text) }
-
-    .layout { display: flex; gap: 28px; padding: 32px }
-    .sidebar {
-      width: 260px; background: var(--panel); padding: 20px;
-      border-radius: 12px; box-shadow: var(--soft-shadow);
-      display: flex; flex-direction: column; height: calc(100vh - 64px);
-      position: sticky; top: 32px;
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif
     }
 
-    .nav-link { padding: 10px 12px; color: var(--muted); text-decoration: none; font-weight: 600; border-radius: 8px }
-    .nav-link.active { background: rgba(5,150,105,.08); color: var(--accent) }
-    .nav-link.logout { margin-top: auto; background: var(--danger); color: #fff; text-align: center; border-radius: 999px }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text)
+    }
 
-    .content { flex: 1 }
-    .title { font-size: 1.8rem; font-weight: 800 }
-    .subtitle { color: var(--muted); margin-bottom: 24px }
+    .layout {
+      display: flex;
+      gap: 28px;
+      padding: 32px
+    }
+
+    .sidebar {
+      width: 260px;
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 64px);
+      position: sticky;
+      top: 32px;
+    }
+
+    .nav-link {
+      padding: 10px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 8px
+    }
+
+    .nav-link.active {
+      background: rgba(5, 150, 105, .08);
+      color: var(--accent)
+    }
+
+    .nav-link.logout {
+      margin-top: auto;
+      background: var(--danger);
+      color: #fff;
+      text-align: center;
+      border-radius: 999px
+    }
+
+    .content {
+      flex: 1
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 800
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px
+    }
 
     .cards {
       display: grid;
@@ -59,134 +105,177 @@
     }
 
     .card {
-      background: var(--panel); padding: 20px; border-radius: 12px;
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 12px;
       box-shadow: var(--card-shadow);
     }
 
-    .value { font-size: 1.6rem; font-weight: 800 }
-    .safe { color: var(--accent) }
-    .medium { color: #f59e0b }
-    .high { color: var(--danger) }
-    .trend { color: var(--trend) }
+    .value {
+      font-size: 1.6rem;
+      font-weight: 800
+    }
 
-    .input { width: 100%; padding: 10px; margin-top: 8px }
-    .btn { margin-top: 14px; width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 10px }
+    .safe {
+      color: var(--accent)
+    }
+
+    .medium {
+      color: #f59e0b
+    }
+
+    .high {
+      color: var(--danger)
+    }
+
+    .trend {
+      color: var(--trend)
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px
+    }
+
+    .btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 10px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px
+    }
   </style>
 </head>
 
 <body>
 
-<div class="layout">
+  <div class="layout">
 
-  <aside class="sidebar">
-    <h2>GramSathi</h2>
-    <a class="nav-link" href="dashboard.html">Dashboard</a>
-    <a class="nav-link" href="climate-risk.html">Climate Risk</a>
-    <a class="nav-link" href="crop-safe.html">Crop Safety</a>
-    <a class="nav-link active" href="market-insights.html">Market Insight</a>
-    <a class="nav-link logout" href="#" onclick="logout()">Logout</a>
-  </aside>
+    <aside class="sidebar">
+      <h2>GramSathi</h2>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="climate-risk.html">Climate Risk</a>
+      <a class="nav-link" href="crop-safe.html">Crop Safety</a>
+      <a class="nav-link active" href="market-insights.html">Market Insight</a>
+      <a class="nav-link logout" href="#" onclick="logout()">Logout</a>
+    </aside>
 
-  <main class="content">
-    <div class="title">Market Insights</div>
-    <div class="subtitle">Price trends, demand signals, and selling recommendations</div>
+    <main class="content">
+      <div class="title">Market Insights</div>
+      <div class="subtitle">Price trends, demand signals, and selling recommendations</div>
 
-    <section class="cards">
+      <section class="cards">
 
-      <div class="card">
-        <h3>Market Inputs</h3>
-        <select id="cropSelect" class="input">
-          <option value="">Choose crop</option>
-          <option>Rice</option>
-          <option>Wheat</option>
-          <option>Maize</option>
-        </select>
-        <input id="locationInput" class="input" placeholder="District / Market area">
-        <button class="btn" onclick="analyzeMarket()">Analyze Market</button>
-      </div>
+        <div class="card">
+          <h3>Market Inputs</h3>
+          <select id="cropSelect" class="input">
+            <option value="">Choose crop</option>
+            <option>Rice</option>
+            <option>Wheat</option>
+            <option>Maize</option>
+          </select>
+          <input id="locationInput" class="input" placeholder="District / Market area">
+          <button class="btn" onclick="analyzeMarket()">Analyze Market</button>
+        </div>
 
-      <div class="card"><h3>Demand Trend</h3><div id="demandValue" class="value">--</div></div>
-      <div class="card"><h3>Supply Pressure</h3><div id="supplyValue" class="value">--</div></div>
-      <div class="card"><h3>Price Outlook</h3><div id="priceValue" class="value">--</div></div>
-      <div class="card"><h3>Sell Recommendation</h3><div id="adviceValue" class="value">--</div></div>
+        <div class="card">
+          <h3>Demand Trend</h3>
+          <div id="demandValue" class="value">--</div>
+        </div>
+        <div class="card">
+          <h3>Supply Pressure</h3>
+          <div id="supplyValue" class="value">--</div>
+        </div>
+        <div class="card">
+          <h3>Price Outlook</h3>
+          <div id="priceValue" class="value">--</div>
+        </div>
+        <div class="card">
+          <h3>Sell Recommendation</h3>
+          <div id="adviceValue" class="value">--</div>
+        </div>
 
-      <div class="card">
-        <h3>Estimated Market Price</h3>
-        <div id="estimatedPrice" class="value">--</div>
-      </div>
+        <div class="card">
+          <h3>Estimated Market Price</h3>
+          <div id="estimatedPrice" class="value">--</div>
+        </div>
 
-      <div class="card" style="grid-column: span 2">
-        <h3>Estimated Price Trend (₹/Quintal)</h3>
-        <canvas id="priceChart"></canvas>
-      </div>
+        <div class="card" style="grid-column: span 2">
+          <h3>Estimated Price Trend (रु/Quintal)</h3>
+          <canvas id="priceChart" style="height:220px"></canvas>
+        </div>
 
-    </section>
-  </main>
-</div>
+      </section>
+    </main>
+  </div>
 
-<script>
-/* Firebase */
-firebase.initializeApp({
-  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
-  authDomain: "nexu-3d034.firebaseapp.com",
-  projectId: "nexu-3d034"
-});
+  <script>
+    /* Firebase */
+    firebase.initializeApp({
+      apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+      authDomain: "nexu-3d034.firebaseapp.com",
+      projectId: "nexu-3d034"
+    });
 
-firebase.auth().onAuthStateChanged(u => { if (!u) location='login.html' });
-function logout(){ firebase.auth().signOut().then(()=>location='login.html') }
+    firebase.auth().onAuthStateChanged(u => { if (!u) location = 'login.html' });
+    function logout() { firebase.auth().signOut().then(() => location = 'login.html') }
 
-/* Existing logic (UNCHANGED) */
-function seasonalDemand(c){const m=new Date().getMonth()+1;return c==='Rice'&&m>=9&&m<=12?'High':c==='Wheat'&&m>=3&&m<=6?'High':c==='Maize'&&m>=7&&m<=10?'High':'Medium'}
-function supplyPressure(c,t,r){return c==='Rice'&&r>6?'High':c==='Wheat'&&t<30?'High':c==='Maize'&&r>5?'High':'Medium'}
-function priceOutlook(d,s){return d==='High'&&s==='Low'?'Rising':d==='High'?'Stable':s==='High'?'Falling':'Stable'}
-function sellAdvice(o){return o==='Rising'?'Hold for Better Price':o==='Stable'?'Sell if Needed':'Sell Early'}
+    /* Existing logic (UNCHANGED) */
+    function seasonalDemand(c) { const m = new Date().getMonth() + 1; return c === 'Rice' && m >= 9 && m <= 12 ? 'High' : c === 'Wheat' && m >= 3 && m <= 6 ? 'High' : c === 'Maize' && m >= 7 && m <= 10 ? 'High' : 'Medium' }
+    function supplyPressure(c, t, r) { return c === 'Rice' && r > 6 ? 'High' : c === 'Wheat' && t < 30 ? 'High' : c === 'Maize' && r > 5 ? 'High' : 'Medium' }
+    function priceOutlook(d, s) { return d === 'High' && s === 'Low' ? 'Rising' : d === 'High' ? 'Stable' : s === 'High' ? 'Falling' : 'Stable' }
+    function sellAdvice(o) { return o === 'Rising' ? 'Hold for Better Price' : o === 'Stable' ? 'Sell if Needed' : 'Sell Early' }
 
-async function getCoordinates(p){const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${p}`);const d=await r.json();return {lat:d[0].lat,lon:d[0].lon}}
-async function getWeather(lat,lon){const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`);return r.json()}
+    async function getCoordinates(p) { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${p}`); const d = await r.json(); return { lat: d[0].lat, lon: d[0].lon } }
+    async function getWeather(lat, lon) { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,precipitation&timezone=auto`); return r.json() }
 
-/* Price logic (UNCHANGED) */
-const BASE_PRICES={Rice:2200,Wheat:2100,Maize:1850}
-function demandFactor(c){const m=new Date().getMonth()+1;return c==='Rice'&&m>=9&&m<=12?1.12:c==='Wheat'&&m>=3&&m<=6?1.1:c==='Maize'&&m>=7&&m<=10?1.08:1}
-function supplyFactor(c,r,t){return c==='Rice'&&r>6?0.95:c==='Wheat'&&t<30?0.97:c==='Maize'&&r>5?0.96:1.05}
-function estimatePrice(c,r,t){return Math.round(BASE_PRICES[c]*demandFactor(c)*supplyFactor(c,r,t))}
+    /* Price logic (UNCHANGED) */
+    const BASE_PRICES = { Rice: 2200, Wheat: 2100, Maize: 1850 }
+    function demandFactor(c) { const m = new Date().getMonth() + 1; return c === 'Rice' && m >= 9 && m <= 12 ? 1.12 : c === 'Wheat' && m >= 3 && m <= 6 ? 1.1 : c === 'Maize' && m >= 7 && m <= 10 ? 1.08 : 1 }
+    function supplyFactor(c, r, t) { return c === 'Rice' && r > 6 ? 0.95 : c === 'Wheat' && t < 30 ? 0.97 : c === 'Maize' && r > 5 ? 0.96 : 1.05 }
+    function estimatePrice(c, r, t) { return Math.round(BASE_PRICES[c] * demandFactor(c) * supplyFactor(c, r, t)) }
 
-/* Chart */
-let priceChart;
-function renderPriceChart(base,est){
-  if(priceChart)priceChart.destroy();
-  priceChart=new Chart(document.getElementById("priceChart"),{
-    type:"line",
-    data:{labels:["4w","3w","2w","Last","Now"],datasets:[{data:[base*.94,base*.96,base*.98,base,est],borderWidth:3,tension:.35}]},
-    options:{plugins:{legend:{display:false}}}
-  });
-}
+    /* Chart */
+    let priceChart;
+    function renderPriceChart(base, est) {
+      if (priceChart) priceChart.destroy();
+      priceChart = new Chart(document.getElementById("priceChart"), {
+        type: "line",
+        data: { labels: ["4w", "3w", "2w", "Last", "Now"], datasets: [{ data: [base * .94, base * .96, base * .98, base, est], borderWidth: 3, tension: .35 }] },
+        options: { plugins: { legend: { display: false } } }
+      });
+    }
 
-/* MAIN FUNCTION */
-async function analyzeMarket(){
-  const crop=cropSelect.value;
-  const loc=locationInput.value.trim();
-  if(!crop||!loc)return alert("Select crop and location");
+    /* MAIN FUNCTION */
+    async function analyzeMarket() {
+      const crop = cropSelect.value;
+      const loc = locationInput.value.trim();
+      if (!crop || !loc) return alert("Select crop and location");
 
-  const {lat,lon}=await getCoordinates(loc);
-  const w=await getWeather(lat,lon);
-  const temp=w.current.temperature_2m;
-  const rain=w.current.precipitation;
+      const { lat, lon } = await getCoordinates(loc);
+      const w = await getWeather(lat, lon);
+      const temp = w.current.temperature_2m;
+      const rain = w.current.precipitation;
 
-  const demand=seasonalDemand(crop);
-  const supply=supplyPressure(crop,temp,rain);
-  const outlook=priceOutlook(demand,supply);
-  const advice=sellAdvice(outlook);
+      const demand = seasonalDemand(crop);
+      const supply = supplyPressure(crop, temp, rain);
+      const outlook = priceOutlook(demand, supply);
+      const advice = sellAdvice(outlook);
 
-  demandValue.innerText=demand;
-  supplyValue.innerText=supply;
-  priceValue.innerText=outlook;
-  adviceValue.innerText=advice;
+      demandValue.innerText = demand;
+      supplyValue.innerText = supply;
+      priceValue.innerText = outlook;
+      adviceValue.innerText = advice;
 
-  const est=estimatePrice(crop,rain,temp);
-  estimatedPrice.innerText=`₹ ${est}`;
-  renderPriceChart(BASE_PRICES[crop],est);
-}
-</script>
+        const est = estimatePrice(crop, rain, temp);
+        estimatedPrice.innerText = `रु ${est.toLocaleString()}`;
+        renderPriceChart(BASE_PRICES[crop], est);
+    }
+  </script>
 
 </body>
+
 </html>

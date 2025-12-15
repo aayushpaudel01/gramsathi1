@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | GramSathi AI</title>
-    <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="login.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 </head>
+
 <body>
 
   <div class="auth-container">
-    <h2 id="formTitle">Login to GramSathi</h2>
-    <p class="subtitle" id="formSubtitle">Access your farmer dashboard</p>
+    <div class="brand">
+      <div class="logo">G</div>
+      <div>
+        <h2 id="formTitle">Login to GramSathi</h2>
+        <div class="subtitle" id="formSubtitle">Access your farmer dashboard</div>
+      </div>
+    </div>
+
     <div class="input-group" id="nameGroup" style="display:none;">
-      <input type="text" id="name" placeholder="Full Name" />
+      <input class="input" type="text" id="name" placeholder="Full Name" />
     </div>
 
     <div class="input-group">
-      <input type="email" id="email" placeholder="Email Address" />
+      <input class="input" type="email" id="email" placeholder="Email Address" />
     </div>
 
-    <div class="input-group">
-      <input type="password" id="password" placeholder="Password" />
+    <div class="input-group input-with-toggle">
+      <input class="input" type="password" id="password" placeholder="Password" />
+      <button type="button" class="toggle-btn" aria-label="Toggle password" onclick="togglePassword()">👁️</button>
     </div>
 
-    <button onclick="handleAuth()" id="authBtn">Login</button>
+    <button onclick="handleAuth()" id="authBtn" class="primary-btn">Login</button>
 
     <div class="switch">
       <span id="toggleText" onclick="toggleForm()">Don't have an account? Register</span>
@@ -40,14 +49,14 @@
     </div>
   </div>
   <script>
- const firebaseConfig = {
-  apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
-  authDomain: "nexu-3d034.firebaseapp.com",
-  projectId: "nexu-3d034",
-  storageBucket: "nexu-3d034.firebasestorage.app",
-  messagingSenderId: "174169137790",
-  appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCvT-E2cHv7kdVgTHVlpttyKkpiK9EzMaI",
+      authDomain: "nexu-3d034.firebaseapp.com",
+      projectId: "nexu-3d034",
+      storageBucket: "nexu-3d034.firebasestorage.app",
+      messagingSenderId: "174169137790",
+      appId: "1:174169137790:web:e70a8aa65adb38f93d2e2f"
+    };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     let isLogin = true;
@@ -86,6 +95,13 @@
           .catch(err => errorDiv.innerText = err.message);
       }
     }
-    </script>
+
+    function togglePassword() {
+      const p = document.getElementById('password');
+      if (!p) return;
+      p.type = p.type === 'password' ? 'text' : 'password';
+    }
+  </script>
 </body>
+
 </html>
